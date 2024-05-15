@@ -3,6 +3,8 @@ import os
 import webbrowser
 import matplotlib.pyplot as plt
 
+dir_relatorio = "../Relatorio/"
+
 def ler_volume_vendas():
     return pd.read_csv('../Dados/Tratados/volume_vendas_por_categoria_ordenado.csv')
 
@@ -107,8 +109,8 @@ def gerar_relatorio():
 
     html_report += "</div>\n</body>\n\n</html>"
 
-
-    with open('../Relatorio/relatorio.html', 'w') as f:
+    os.makedirs(dir_relatorio, exist_ok=True)
+    with open(dir_relatorio + 'relatorio.html', 'w') as f:
         f.write(html_report)
 
     
