@@ -32,6 +32,7 @@ Este projeto requer Python 3 e as seguintes bibliotecas Python instaladas:
 
 - Pandas:  `pip install pandas`
 - Matplotlib:  `pip install matplotlib`
+- Seaborn:  `pip install seaborn`
 
 ## Sobre os Dados
 
