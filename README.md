@@ -22,7 +22,7 @@ O projeto está organizado da seguinte forma:
 ## Como executar
 
 1. Clone o repositório: `
-git clone https://github.com/JoseCumaru/AED_e-commerce.git
+git clone https://github.com/JoseCumaru/Desafio-Bemol.git
 
 2. Execute o script `main.py`.
 
