@@ -15,30 +15,29 @@ def analise_exploratoria():
     produtos_df = pd.read_csv('../Dados/Tratados/olist_products_dataset.csv')
     traducao_categoria_produto_df = pd.read_csv('../Dados/Tratados/product_category_name_translation.csv')
 
-    # 1.2. Traduz os nomes das categorias
+  
     produtos_df = produtos_df.merge(traducao_categoria_produto_df, on='product_category_name', how='left')
 
-    # 1.3. Junta pedidos e itens de pedidos
+   
     merged_df = pedidos_df.merge(order_items_df, on='order_id', how='inner')
 
-    # 1.4. Junta com produtos
+
     merged_df = merged_df.merge(produtos_df, on='product_id', how='inner')
 
-    # 1.5. Filtrar pedidos entregues
+
     merged_df_filtrado = merged_df[merged_df['order_status'] == 'delivered']
 
-    # 1.6. Agrupa e calcula volume de vendas
+  
     volume_vendas_por_categoria = merged_df_filtrado.groupby('product_category_name_english')['valor_total'].sum().reset_index().rename(columns={'valor_total': 'volume_vendas'})
 
-    # 1.7. Ordena por volume de vendas
+  
     volume_vendas_por_categoria_ordenado = volume_vendas_por_categoria.sort_values(by='volume_vendas', ascending=False)
 
-    # 1.8. Exibe resultados
     print("Volume de vendas por categoria:")
     print(volume_vendas_por_categoria_ordenado.head(10).to_markdown(index=False, numalign="left", stralign="left"))
 
     os.makedirs(diretorio_figuras, exist_ok=True)
-    # 1.9. Visualização: Gráfico de barras do volume de vendas por categoria (Top 10)
+    
     plt.figure(figsize=(12, 6))
     sns.barplot(data=volume_vendas_por_categoria_ordenado.head(10), x='product_category_name_english', y='volume_vendas')
     plt.xticks(rotation=45, ha='right')
@@ -68,13 +67,13 @@ def analise_exploratoria():
     # 3. Análise de Satisfação do Cliente (Avaliações de Produtos)
     merged_reviews_df = order_items_df.merge(avaliacoes_df, on='order_id', how='inner')
 
-    # 3.3. Calcular média de avaliação por produto
+ 
     media_avaliacao_por_produto = merged_reviews_df.groupby('product_id')['review_score'].mean().reset_index().rename(columns={'review_score': 'media_avaliacao'})
 
-    # 3.4. Ordenar por média de avaliação
+
     media_avaliacao_por_produto_ordenado = media_avaliacao_por_produto.sort_values(by='media_avaliacao', ascending=False)
 
-    # 3.5. Exibe 10 melhores e 10 piores produtos
+    
     print("\n10 melhores produtos:")
     print(media_avaliacao_por_produto_ordenado.head(10).to_markdown(index=False, numalign="left", stralign="left"))
 
@@ -97,7 +96,7 @@ def analise_exploratoria():
     print("\nLucratividade Estimada por categoria:")
     print(lucro_estimado_por_categoria_ordenado.head(10).to_markdown(index=False, numalign="left", stralign="left"))
 
-    # 4.3. Visualização: Gráfico de barras do lucro estimado por categoria (Top 10)
+
     plt.figure(figsize=(12, 6))
     sns.barplot(data=lucro_estimado_por_categoria_ordenado.head(10), x='product_category_name_english', y='lucro_estimado')
     plt.xticks(rotation=45, ha='right')
