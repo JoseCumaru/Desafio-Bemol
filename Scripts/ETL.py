@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 
-# Definindo o diretório de saída globalmente
 diretorio_saida = "../Dados/Tratados/"
 
 def tratar_dados():
@@ -20,7 +19,6 @@ def tratar_dados():
 
     diretorio_bruto = "../Dados/Brazilian E-Commerce Public Dataset by Olist/"
 
-    # Criando o diretório de saída caso ele não exista
     os.makedirs(diretorio_saida, exist_ok=True)
 
     for arquivo, colunas in arquivos_df.items():
@@ -29,39 +27,38 @@ def tratar_dados():
         dados = pd.read_csv(os.path.join(diretorio_bruto, arquivo), usecols=colunas)
 
         # 2. Transformação dos dados
-        # Removendo linhas com valores ausentes em colunas chave
         print(f"Tratando o arquivo {arquivo}")
         dados.dropna(subset=colunas, inplace=True)
 
-        # Preenchendo valores ausentes em outras colunas
+      
         for col in dados.columns:
             if dados[col].dtype == 'object':
-                dados[col] = dados[col].fillna('Outros')  # Substitui por 'Outros' em colunas categóricas
+                dados[col] = dados[col].fillna('Outros') 
             elif dados[col].dtype in ['int64', 'float64']:
-                dados[col] = dados[col].fillna(dados[col].median())  # Substitui pela mediana em colunas numéricas
+                dados[col] = dados[col].fillna(dados[col].median())
 
-        # Convertendo colunas para datetime (se aplicável)
+       
         colunas_datetime = ['order_purchase_timestamp', 'order_approved_at', 'order_delivered_carrier_date', 'order_delivered_customer_date', 'order_estimated_delivery_date', 'shipping_limit_date', 'review_creation_date', 'review_answer_timestamp']
         for col in colunas_datetime:
             if col in dados.columns:
                 dados[col] = pd.to_datetime(dados[col], format='%Y-%m-%d %H:%M:%S', errors='coerce')
 
-        # Convertendo colunas categóricas para o tipo 'category'
+      
         colunas_categoricas = ['order_status', 'payment_type', 'product_category_name', 'customer_state', 'seller_state', 'review_id']
         for col in colunas_categoricas:
             if col in dados.columns:
                 dados[col] = dados[col].astype('category')
 
-        # Criando novas features
+     
         if arquivo == 'olist_orders_dataset.csv':
-            # Calcular tempo de entrega em dias
+        
             dados['tempo_entrega'] = (dados['order_delivered_customer_date'] - dados['order_purchase_timestamp']).dt.days
 
-            # Calcular atraso na entrega em dias (corrigido)
+       
             dados['atraso_entrega'] = (dados['order_delivered_customer_date'] - dados['order_estimated_delivery_date']).dt.days
 
         if arquivo == 'olist_order_items_dataset.csv':
-            # Calcular valor total do pedido
+           
             dados['valor_total'] = dados['price'] + dados['freight_value']
 
         # 3. Carregamento dos resultados
